@@ -5,25 +5,22 @@ namespace dktapps\PauseResume;
 use pocketmine\plugin\PluginBase;
 use pocketmine\command\CommandSender;
 use pocketmine\command\Command;
+use pocketmine\network\mcpe\protocol\LevelEventPacket;
 
 class Main extends PluginBase{
 
-	public function onEnable(){
-		$this->getLogger()->info("Hello World!");
-	}
-
-	public function onCommand(CommandSender $sender, Command $command, $label, array $args){
+	public function onCommand(CommandSender $sender, Command $command, string $label, array $args) : bool{
 		switch($command->getName()){
 			case "pause":
-				$pk = new \pocketmine\network\mcpe\protocol\LevelEventPacket();
-				$pk->evid = 3005;
+				$pk = new LevelEventPacket();
+				$pk->evid = LevelEventPacket::EVENT_PAUSE_GAME;
 				$pk->data = 1;
 				$sender->getServer()->broadcastPacket($sender->getServer()->getOnlinePlayers(), $pk);
 				$sender->sendMessage("Paused!");
 				return true;
 			case "resume":
-				$pk = new \pocketmine\network\mcpe\protocol\LevelEventPacket();
-				$pk->evid = 3005;
+				$pk = new LevelEventPacket();
+				$pk->evid = LevelEventPacket::EVENT_PAUSE_GAME;
 				$pk->data = 0;
 				$sender->getServer()->broadcastPacket($sender->getServer()->getOnlinePlayers(), $pk);
 				$sender->sendMessage("Resumed!");
@@ -31,9 +28,5 @@ class Main extends PluginBase{
 			default:
 				return false;
 		}
-	}
-
-	public function onDisable(){
-		$this->getLogger()->info("Bye");
 	}
 }
